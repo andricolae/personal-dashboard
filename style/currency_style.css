@@ -1,0 +1,181 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+/***********************
+    ELEMENTE HTML
+************************/
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f4f7f9;
+    color: #333;
+    margin: 0;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+h1 {
+    font-size: 2rem;
+    font-weight: 600;
+    text-align: center;
+    color: #0056b3;
+}
+
+button {
+    background-color: #0056b3;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    padding: 10px 15px;
+    font-size: 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+button:hover {
+    background-color: #004499;
+}
+
+input, select, button {
+    padding: 10px;
+    font-size: 1rem;
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    transition: border 0.3s ease;
+}
+
+input:focus, select:focus, button:focus {
+    border: 1px solid #0056b3;
+    outline: none;
+}
+
+/****************
+    CLASE
+*****************/
+
+.container {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 500px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.input-section input,
+.currency-selection select {
+    width: 100%;
+}
+
+.action-section {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+}
+
+.result-section {
+    text-align: center;
+}
+
+.currency-selection {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.input-section input {
+    text-align: center;
+}
+
+.conversion-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+}
+
+.row {
+    display: flex;
+    gap: 10px;
+}
+
+.input-currency-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    align-items: center;
+}
+
+.input-section {
+    flex: 0 0 50%;
+}
+
+.currency-selection {
+    flex: 0 0 50%;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.error-message {
+    color: lightcoral;
+    font-size: 1.2rem;
+    display: none;
+    margin-top: 10px;
+    text-align: center;
+    font-weight: bold;
+}
+
+/*****************
+    ID-URI
+******************/
+
+#copy {
+    display: none;
+}
+
+#amount, #result {
+    flex: 2;
+}
+
+#fromCurrency, #toCurrency {
+    flex: 1;
+}
+
+/***************
+    MEDIA
+****************/
+
+@media (max-width: 768px) {
+    .input-currency-row {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .input-section,
+    .currency-selection {
+        flex: 1 1 100%;
+    }
+}
+
+@media (max-width: 600px) {
+    .container {
+        padding: 15px;
+        margin: 0 10px;
+    }
+
+    input, select, button {
+        font-size: 0.9rem;
+        padding: 8px;
+    }
+
+    h1 {
+        font-size: 1.5rem;
+    }
+}

@@ -7,6 +7,7 @@
     <meta name="description" content="My Personal Dashboard">
     <title>Personal Dashboard</title>
     <link rel="stylesheet" href="style\style.css">
+    <link rel="stylesheet" href="style\currency_style.css">
 </head>
 
 <body>
@@ -20,8 +21,29 @@
 
         <section id="currency">
             <h2>Currency Exchange</h2>
-            <!-- TO DO -->
 
+                <div class="conversion-container">
+                    <div class="row">
+                        <input type="number" id="amount" placeholder="Enter amount to convert">
+                        <select id="fromCurrency"></select>
+                    </div>
+
+                    <div class="row">
+                        <input type="text" id="result" placeholder="Here come's the answer" readonly>
+                        <select id="toCurrency"></select>
+                    </div>
+                </div>
+
+                <div class="action-section">
+                    <button onclick="swapCurrencies()">SWAP CURRENCIES</button>
+                    <button onclick="resetFields()">RESET</button>
+
+                    <div class="error-message" id="errorMessage"></div>
+                </div>
+
+                <div class="result-section">
+                    <button id="copy" onclick="copyResult()">COPY RESULT</button>
+                </div>
         </section>
 
         <section id="schedule">
@@ -37,5 +59,6 @@
         </section>
     </main>
 
+    <script src="js\currency_script.js"></script>
 </body>
 </html>
