@@ -7,6 +7,7 @@
     <meta name="description" content="My Personal Dashboard">
     <title>Personal Dashboard</title>
     <link rel="stylesheet" href="style\style.css">
+    <link rel="stylesheet" href="style\calendar_style.css">
 </head>
 
 <body>
@@ -26,8 +27,29 @@
 
         <section id="schedule">
             <h2>Today's Schedule</h2>
-            <!-- TO DO -->
+            <div class="calendar">
+                <header>
+                    <pre class="left">◀</pre>
+                    <div class="header-display">
+                        <p class="display">""</p>
+                    </div>
+                    <pre class="left">▶</pre>
+                </header>
 
+                <div class="week">
+                    <div>Mon</div>
+                    <div>Tue</div>
+                    <div>Wed</div>
+                    <div>Thu</div>
+                    <div>Fri</div>
+                    <div>Sat</div>
+                    <div>Sun</div>
+                </div>
+                <div class="days"></div>
+            </div>
+            <div class="display-selected">
+                <p class="selected"></p>
+            </div>
         </section>
 
         <section id="news">
