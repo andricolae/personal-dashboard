@@ -8,9 +8,23 @@ let dateToday = new Date();
 console.log(dateToday);
 
 console.log(dateToday.getFullYear());
-console.log(dateToday.getMonth()+ 1);  //date obj is 0 based -> Jan=0, Feb=1 etc so add one fo arctual month nr
+console.log(dateToday.getMonth() + 1);  //date obj is 0 based -> Jan=0, Feb=1 etc so add one fo arctual month nr
 console.log(dateToday.getDate());
 console.log(dateToday.getHours() + ":" + dateToday.getMinutes() + ":" + dateToday.getSeconds());
 
 let year = dateToday.getFullYear();
 let month = dateToday.getMonth();
+
+
+displayCalendar()
+
+function displayCalendar() {
+    //show the current month and year
+    let formattedDate = dateToday.toLocaleString(
+        "en-US", {
+        month: "long",
+        year: "numeric",
+    });
+    display.innerHTML =  `${formattedDate}`;
+
+}
