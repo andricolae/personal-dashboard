@@ -1,7 +1,7 @@
 cityInputField = document.getElementById("city-input");
 getWeatherBtn = document.getElementById('get-weather');
 forecastDaysContainer = document.getElementById('forecast-days');
-
+errorMessageDiv = document.getElementById('error-message');
 
 cityInputField.addEventListener("input", function (e) {
     this.value = this.value.replace(/[^A-Za-z\s]/g, "");
@@ -13,6 +13,9 @@ getWeatherBtn.addEventListener('click', () => {
 
     const city = cityInputField.value;
 
+    errorMessageDiv.style.display = 'none';
+    errorMessageDiv.textContent = '';
+
     fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${myAPIkey}&units=metric`)
         .then(response => response.json())
         .then(data => {
@@ -22,7 +25,11 @@ getWeatherBtn.addEventListener('click', () => {
             document.getElementById('wind-speed').textContent = `Wind Speed: ${data.wind.speed} m/s`;
             document.getElementById('pressure').textContent = `Pressure: ${data.main.pressure} hPa`;
         })
-        .catch(error => console.error('Error fetching current weather:', error));
+        .catch(error => {
+            console.error('Error fetching current weather:', error);
+            errorMessageDiv.style.display = 'block';
+            errorMessageDiv.textContent = 'Error fetching current weather';
+        });
 
 
     fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${myAPIkey}&units=metric`)
@@ -76,6 +83,10 @@ getWeatherBtn.addEventListener('click', () => {
             });
 
         })
-        .catch(error => console.error('Error fetching forecast data:', error));
+        .catch(error => {
+            console.error('Error fetching forecast data:', error)
+            errorMessageDiv.style.display = 'block';
+            errorMessageDiv.textContent = 'Error fetching forecast data';
+        });
 
 })
