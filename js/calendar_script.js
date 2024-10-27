@@ -25,20 +25,20 @@ function displayCalendar() {
         month: "long",
         year: "numeric",
     });
-    display.innerHTML =  `${formattedDate}`;
+    display.innerHTML = `${formattedDate}`;
 
     //dosplay days
     const firstDay = new Date(year, month, 1);
-    const firstDayIndex = firstDay.getDay(); 
+    const firstDayIndex = firstDay.getDay();
     const lastDay = new Date(year, month + 1, 0);
-    const numberOfDays = lastDay.getDate(); 
+    const numberOfDays = lastDay.getDate();
 
     // add empty divs to calendar
     for (let x = 1; x <= firstDayIndex; x++) {
         let div = document.createElement("div");
         div.innerHTML += "";
         days.appendChild(div);
-      }
+    }
 
     for (let i = 1; i <= numberOfDays; i++) {
         let div = document.createElement("div");
@@ -47,11 +47,25 @@ function displayCalendar() {
         div.innerHTML += i;
         days.appendChild(div);
         if (
-          currentDate.getFullYear() === new Date().getFullYear() &&
-          currentDate.getMonth() === new Date().getMonth() &&
-          currentDate.getDate() === new Date().getDate()
+            currentDate.getFullYear() === new Date().getFullYear() &&
+            currentDate.getMonth() === new Date().getMonth() &&
+            currentDate.getDate() === new Date().getDate()
         ) {
-          div.classList.add("current-date");
+            div.classList.add("current-date");
         }
-      }
+    }
 }
+
+//select a date
+function displaySelected() {
+    const dayElements = document.querySelectorAll(".days div");
+    dayElements.forEach((day) => {
+        day.addEventListener("click", (e) => {
+            const selectedDate = e.target.dataset.date;
+            console.log(`Selected Date: ${selectedDate}`);
+            selected.innerHTML = `Selected Date: ${selectedDate}`;
+        });
+    });
+}
+displaySelected();
+
