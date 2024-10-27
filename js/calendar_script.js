@@ -69,3 +69,29 @@ function displaySelected() {
 }
 displaySelected();
 
+previous.addEventListener("click", () => {
+    days.innerHTML = "";
+    selected.innerHTML = "";
+    if (month < 0) {
+        month = 11;
+        year = year - 1;
+    }
+    month = month - 1;
+    console.log(month);
+    dateToday.setMonth(month);
+    displayCalendar();
+    displaySelected();
+});
+
+next.addEventListener("click", () => {
+    days.innerHTML = "";
+    selected.innerHTML = "";
+    if (month > 11) {
+        month = 0;
+        year = year + 1;
+    }
+    month = month + 1;
+    dateToday.setMonth(month);
+    displayCalendar();
+    displaySelected();
+});
