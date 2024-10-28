@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="My Personal Dashboard">
     <title>Personal Dashboard</title>
-    <link rel="stylesheet" href="style\style.css">
+    <link rel="stylesheet" href="style/style.css">
     <link rel="stylesheet" href="style/weather.css">
 </head>
 
@@ -16,18 +16,21 @@
         <section id="weather">
             <h2>Weather</h2>
 
-            <label for="city-input">Enter City:</label>
-            <input type="text" id="city-input" placeholder="e.g., London" title="Alphabetic characters only!">
+            <div id="weather-container">
+                <div id="city-input-container">
+                    <label for="city-input">Enter City:</label>
+                    <input type="text" id="city-input" placeholder="e.g., London" title="Alphabetic characters only!">
+                    <button id="get-weather">Get Weather</button>
+                </div>
 
-            <button id="get-weather">Get Weather</button>
-
-            <div id="current-weather">
-                <h3>Today's Weather</h3>
-                <p id="temperature">Temperature: -- °C</p>
-                <p id="description">Description: --</p>
-                <p id="humidity">Humidity: --%</p>
-                <p id="wind-speed">Wind Speed: -- m/s</p>
-                <p id="pressure">Pressure: -- hPa</p> 
+                <div id="current-weather">
+                    <h3>Today's Weather</h3>
+                    <p id="temperature">Temperature: -- °C</p>
+                    <p id="description">Description: --</p>
+                    <p id="humidity">Humidity: --%</p>
+                    <p id="wind-speed">Wind Speed: -- m/s</p>
+                    <p id="pressure">Pressure: -- hPa</p>
+                </div>
             </div>
 
             <div id="error-message" style="color: red; display: none;"></div>
@@ -38,8 +41,8 @@
                     <!-- to be completed -->
                 </div>
             </div>
-
         </section>
+
 
         <section id="currency">
             <h2>Currency Exchange</h2>
