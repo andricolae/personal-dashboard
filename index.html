@@ -21,7 +21,6 @@
 
         <section id="currency">
             <h2>Currency Exchange</h2>
-
                 <div class="conversion-container">
                     <div class="row">
                         <input type="number" id="amount" placeholder="Enter amount to convert">
@@ -33,16 +32,11 @@
                         <select id="toCurrency"></select>
                     </div>
                 </div>
-
                 <div class="action-section">
-                    <button onclick="swapCurrencies()">SWAP CURRENCIES</button>
-                    <button onclick="resetFields()">RESET</button>
-
-                    <div class="error-message" id="errorMessage"></div>
-                </div>
-
-                <div class="result-section">
+                    <button id="button" onclick="swapCurrencies()">SWAP CURRENCIES</button>
+                    <button id="button" onclick="resetFields()">RESET</button>
                     <button id="copy" onclick="copyResult()">COPY RESULT</button>
+                    <div class="error-message" id="errorMessage"></div>
                 </div>
         </section>
 
