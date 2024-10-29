@@ -1,0 +1,27 @@
+[
+    {
+        "flag": "https://cdn.countryflags.com/thumbs/europe/flag-square-250.png",
+        "currencies": "USD to EUR",
+        "rate": "1.11"
+    },
+    {
+        "flag": "https://cdn.countryflags.com/thumbs/romania/flag-square-250.png",
+        "currencies": "USD to RON",
+        "rate": "1.11"
+    },
+    {
+        "flag": "https://cdn.countryflags.com/thumbs/united-kingdom/flag-square-250.png",
+        "currencies": "USD to GBP",
+        "rate": "1.11"
+    },
+    {
+        "flag": "https://cdn.countryflags.com/thumbs/switzerland/flag-square-250.png",
+        "currencies": "USD to CHF",
+        "rate": "1.11"
+    },
+    {
+        "flag": "https://cdn.countryflags.com/thumbs/india/flag-square-250.png",
+        "currencies": "USD to INR",
+        "rate": "1.11"
+    }
+]
