@@ -145,7 +145,7 @@ input:focus, select:focus, button:focus {
 
 #copy {
     display: none;
-    width: 30%;
+    width: 50%;
 }
 
 #amount, #result {
