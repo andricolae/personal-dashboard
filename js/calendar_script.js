@@ -17,6 +17,7 @@ let month = dateToday.getMonth();
 
 
 displayCalendar()
+displaySelected();
 
 function displayCalendar() {
     //show the current month and year
@@ -27,25 +28,27 @@ function displayCalendar() {
     });
     display.innerHTML = `${formattedDate}`;
 
-    //dosplay days
+    // dosplay days
     const firstDay = new Date(year, month, 1);
-    const firstDayIndex = firstDay.getDay();
+    const firstDayIndex = firstDay.getDay();  // indexul e intre 0-6 (de unde incepe sapt)
     const lastDay = new Date(year, month + 1, 0);
     const numberOfDays = lastDay.getDate();
 
-    // add empty divs to calendar
-    for (let x = 1; x <= firstDayIndex; x++) {
+    // empty divs pt zile inainte
+    for (let x = 1; x <= firstDayIndex - 1; x++) {  // pana la x-1 ca incepi cu luni nu duminica
         let div = document.createElement("div");
-        div.innerHTML += "";
+        // div.innerHTML += "";
         days.appendChild(div);
     }
 
+    // zilele de dupa current
     for (let i = 1; i <= numberOfDays; i++) {
         let div = document.createElement("div");
         let currentDate = new Date(year, month, i);
         div.dataset.date = currentDate.toDateString();
         div.innerHTML += i;
         days.appendChild(div);
+        // ziua curenta marcata
         if (
             currentDate.getFullYear() === new Date().getFullYear() &&
             currentDate.getMonth() === new Date().getMonth() &&
@@ -67,12 +70,12 @@ function displaySelected() {
         });
     });
 }
-displaySelected();
+
 
 previous.addEventListener("click", () => {
     days.innerHTML = "";
     selected.innerHTML = "";
-    if (month < 0) {
+    if (month < 0) {  // de la Jan(0) la Dec(11)
         month = 11;
         year = year - 1;
     }
