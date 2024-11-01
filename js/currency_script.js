@@ -3,6 +3,7 @@ const apiUrlLatest = `https://v6.exchangerate-api.com/v6/${apiKey}/latest/`;
 const apiUrlCodes = `https://v6.exchangerate-api.com/v6/${apiKey}/codes/`;
 
 let exchangeRates = {};
+let popularRates = {};
 let availableCodes = {};
 const amountInput = document.getElementById('amount');
 const fromCurrencySelect = document.getElementById('fromCurrency');
@@ -30,14 +31,13 @@ function hideError() {
 /*****************
     AT APP LOAD
  *****************/
-
-window.onload = function() {
+window.onload = async function() {
     const lastFetch = parseInt(localStorage.getItem('lastFetch'), 10);
     const isFreshData = Date.now() - lastFetch < 30 * 24 * 60 * 60 * 1000;
 
     if (navigator.onLine) {
-        fetchCurrencyData();
-        fetchFullCurrencyName();
+        await fetchCurrencyData();
+        await fetchFullCurrencyName();
     } else {
         if (isFreshData) {
             showError("You are offline. Unable to fetch currency data. Using cached data no older than 30 days");
@@ -47,14 +47,15 @@ window.onload = function() {
             loadCachedData();
         }
     }
+    loadRates();
 }
 
 /*****************
     FETCH DATA
  *****************/
 
-function fetchCurrencyData() {
-    fetch (`${apiUrlLatest}RON`)
+async function fetchCurrencyData() {
+    await fetch (`${apiUrlLatest}RON`)
         .then(response => {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
@@ -64,6 +65,7 @@ function fetchCurrencyData() {
         .then(data => {
             if (data && data.conversion_rates) {
                 exchangeRates = data.conversion_rates;
+                popularRates = data.conversion_rates;
                 localStorage.setItem('exchangeRates', JSON.stringify(exchangeRates));
                 localStorage.setItem('lastFetch', Date.now().toString());
             } else {
@@ -75,6 +77,11 @@ function fetchCurrencyData() {
             console.error("Fetch error:", error);
             loadCachedData();
         });
+        popularRates[0] = exchangeRates.EUR;
+        popularRates[1] = exchangeRates.USD;
+        popularRates[2] = exchangeRates.GBP;
+        popularRates[3] = exchangeRates.CHF;
+        popularRates[4] = exchangeRates.INR;
 }
 
 function loadCachedData() {
@@ -267,4 +274,31 @@ function resetFields() {
     document.getElementById('fromCurrency').value = 'Romanian Leu';
     document.getElementById('toCurrency').value = 'Romanian Leu';
     document.getElementById('copy').style.display = 'none';
+}
+
+async function loadRates() {
+    try {
+        const response = await fetch('currency.json');
+        const rates = await response.json();
+        const ratesContainer = document.querySelector('.currency-cards-container');
+        let ct = 0;
+
+        ratesContainer.innerHTML = '';
+
+        rates.forEach(rate => {
+            const rateCard = `
+                <div class="currency-card">
+                    <img src="${rate.flag}" alt="Country Flag" class="flag-icon">
+                    <div class="currency-info">
+                        <p class="currency-title">${rate.currencies}</p>
+                        <p class="exchange-rate">${popularRates[ct].toFixed(3)}</p>
+                    </div>
+                </div>
+                `;
+            ratesContainer.innerHTML += rateCard;
+            ct++;
+        });
+    } catch (error) {
+        console.error('Eroare la încărcarea datelor .json:', error);
+    }
 }
