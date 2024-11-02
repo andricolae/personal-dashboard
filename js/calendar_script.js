@@ -16,7 +16,7 @@ const btnClose = document.querySelectorAll(".btnClose");
 const weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 let navigation = 0;
 let clicked = null;
-let events = JSON.parse(localStorage.getItem("events")) || {};
+let events = JSON.parse(localStorage.getItem("events")) || [];
 let holidays = [];
 
 async function fetchHolidays() {
@@ -49,7 +49,6 @@ function displayCalendar() {
     const formattedDate = dateToday.toLocaleString("en-US", { month: "long", year: "numeric" });
     display.innerHTML = formattedDate;
 
-    // indexul e intre 0-6 (de unde incepe sapt)
     const firstDay = new Date(year, month, 1).getDay();
     const lastDay = new Date(year, month + 1, 0).getDate();
 
@@ -149,13 +148,7 @@ btnSave.addEventListener("click", () => {
     const notes = eventNotesInput.value.trim();
 
     if (title && time) {
-        const event = { title, time, notes };
-
-        if (!events[clicked]) {
-            events[clicked] = []; 
-        }
-
-        events[clicked].push(event);
+        events.push({ date: clicked, title, time, notes });
         localStorage.setItem("events", JSON.stringify(events));
         closeModal();
     }

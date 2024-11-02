@@ -101,7 +101,18 @@ pre {
 }
 
 .holiday {
-    color: rgb(165, 54, 54); 
+    color: var(--accent);
+    font-weight: bold; 
+    font-size: 10px;
+    text-align: center; 
+    word-wrap: break-word;
+    white-space: normal; 
+    pointer-events: none;
+}
+
+.event {
+
+    color: rgb(193, 21, 196); 
     font-weight: bold; 
     font-size: 10px;
     text-align: center; 
