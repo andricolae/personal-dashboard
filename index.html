@@ -8,6 +8,7 @@
     <title>Personal Dashboard</title>
     <link rel="stylesheet" href="style\style.css">
     <link rel="stylesheet" href="style\calendar_style.css">
+
 </head>
 
 <body>
@@ -31,7 +32,7 @@
                 <header>
                     <pre class="left">◀</pre>
                     <div class="header-display">
-                        <p class="display">""</p>
+                        <p class="display"></p>
                     </div>
                     <pre class="right">▶</pre>
                 </header>
@@ -47,33 +48,33 @@
                 </div>
                 <div class="days"></div>
             </div>
+
             <div class="display-selected">
-                <p class="selected"></p>
+                <!-- <p class="selected"></p> -->
             </div>
+
             <script type="module" src="js/calendar_script.js"></script>
 
-            <div id="event-card" class="modal">
-                <div class="modal-content">
-                    <span id="close-card" class="close">&times;</span>
-                    <h2>Add Title</h2>
-                    <form id="event-form">
-                        <label for="event-title">Title:</label>
-                        <input type="text" id="event-title" required><br>
+            <div id="modal" class="modal">
+                <div id="viewEvent" class="modal-content">
+                    <span class="btnClose">&times;</span>
+                    <h3>Event Details</h3>
+                    <p id="eventText"></p>
+                    <button id="btnDelete">Delete Event</button>
+                </div>
 
-                        <label for="event-date">Date:</label>
-                        <input type="text" id="event-date" readonly><br>
-
-                        <label for="event-time">Time Interval:</label>
-                        <input type="text" id="event-time" placeholder="e.g., 10:00 - 11:00"><br>
-
-                        <label for="event-notes">Notes:</label>
-                        <textarea id="event-notes"></textarea><br>
-
-                        <button type="submit">Save Event</button>
-                    </form>
+                <div id="addEvent" class="modal-content">
+                    <span class="btnClose">&times;</span>
+                    <h3>Add Event</h3>
+                    <input type="text" id="txtTitle" placeholder="Event Title">
+                    <input type="text" id="event-time" placeholder="e.g., 10:00 - 11:00">
+                    <label for="event-notes">Notes:</label>
+                    <textarea id="event-notes"></textarea>
+                    <button id="btnSave">Save Event</button>
                 </div>
             </div>
         </section>
+
 
         <section id="news">
             <h2>Top News</h2>
@@ -83,4 +84,5 @@
     </main>
 
 </body>
+
 </html>
