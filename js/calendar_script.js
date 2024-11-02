@@ -3,98 +3,175 @@ const previous = document.querySelector(".left");
 const next = document.querySelector(".right");
 const days = document.querySelector(".days");
 const selected = document.querySelector(".selected");
+const modal = document.querySelector("#modal");
+const viewEventForm = document.querySelector("#viewEvent");
+const addEventForm = document.querySelector("#addEvent");
+const eventTitleInput = document.querySelector("#txtTitle");
+const eventTimeInput = document.querySelector("#event-time");
+const eventNotesInput = document.querySelector("#event-notes");
+const btnSave = document.querySelector("#btnSave");
+const btnDelete = document.querySelector("#btnDelete");
+const btnClose = document.querySelectorAll(".btnClose");
 
-let dateToday = new Date();
-console.log(dateToday);
+const weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+let navigation = 0;
+let clicked = null;
+let events = JSON.parse(localStorage.getItem("events")) || {};
+let holidays = [];
 
-console.log(dateToday.getFullYear());
-console.log(dateToday.getMonth() + 1);  //date obj is 0 based -> Jan=0, Feb=1 etc so add one fo arctual month nr
-console.log(dateToday.getDate());
-console.log(dateToday.getHours() + ":" + dateToday.getMinutes() + ":" + dateToday.getSeconds());
+async function fetchHolidays() {
+    try {
+        const response = await fetch("https://date.nager.at/api/v3/PublicHolidays/2024/RO");
+        if (!response.ok) throw new Error("Network response was not ok");
 
-let year = dateToday.getFullYear();
-let month = dateToday.getMonth();
+        const data = await response.json();
+        holidays = data.map(item => ({
+            hdate: new Date(item.date).toLocaleDateString("en-GB"),
+            holiday: item.localName.split('/')[0]
+        }));
 
-
-displayCalendar()
-displaySelected();
-
-function displayCalendar() {
-    //show the current month and year
-    let formattedDate = dateToday.toLocaleString(
-        "en-US", {
-        month: "long",
-        year: "numeric",
-    });
-    display.innerHTML = `${formattedDate}`;
-
-    // dosplay days
-    const firstDay = new Date(year, month, 1);
-    const firstDayIndex = firstDay.getDay();  // indexul e intre 0-6 (de unde incepe sapt)
-    const lastDay = new Date(year, month + 1, 0);
-    const numberOfDays = lastDay.getDate();
-
-    // empty divs pt zile inainte
-    for (let x = 1; x <= firstDayIndex - 1; x++) {  // pana la x-1 ca incepi cu luni nu duminica
-        let div = document.createElement("div");
-        // div.innerHTML += "";
-        days.appendChild(div);
-    }
-
-    // zilele de dupa current
-    for (let i = 1; i <= numberOfDays; i++) {
-        let div = document.createElement("div");
-        let currentDate = new Date(year, month, i);
-        div.dataset.date = currentDate.toDateString();
-        div.innerHTML += i;
-        days.appendChild(div);
-        // ziua curenta marcata
-        if (
-            currentDate.getFullYear() === new Date().getFullYear() &&
-            currentDate.getMonth() === new Date().getMonth() &&
-            currentDate.getDate() === new Date().getDate()
-        ) {
-            div.classList.add("current-date");
-        }
+        console.log("Holidays:", holidays);
+    } catch (error) {
+        console.error("Failed to fetch holidays:", error);
     }
 }
 
-//select a date
+fetchHolidays();
+
+let dateToday = new Date();
+let year = dateToday.getFullYear();
+let month = dateToday.getMonth();
+
+displayCalendar();
+displaySelected();
+
+function displayCalendar() {
+    const formattedDate = dateToday.toLocaleString("en-US", { month: "long", year: "numeric" });
+    display.innerHTML = formattedDate;
+
+    // indexul e intre 0-6 (de unde incepe sapt)
+    const firstDay = new Date(year, month, 1).getDay();
+    const lastDay = new Date(year, month + 1, 0).getDate();
+
+    days.innerHTML = "";
+
+    for (let x = 1; x < firstDay; x++) {
+        const emptyDiv = document.createElement("div");
+        days.appendChild(emptyDiv);
+    }
+
+    for (let i = 1; i <= lastDay; i++) {
+        const div = document.createElement("div");
+        const currentDate = new Date(year, month, i);
+        const dateStr = `${i.toString().padStart(2, "0")}-${(month + 1).toString().padStart(2, "0")}-${year}`;
+        div.classList.add("day");
+        div.dataset.date = dateStr;
+        div.innerHTML = i;
+
+        if (currentDate.toDateString() === new Date().toDateString()) {
+            div.classList.add("current-date");
+        }
+
+        const holidayToday = holidays.find(holiday => holiday.hdate === currentDate.toLocaleDateString("en-GB"));
+        if (holidayToday) {
+            const holidayDiv = document.createElement("div");
+            holidayDiv.classList.add("holiday");
+            holidayDiv.innerText = holidayToday.holiday;
+            div.appendChild(holidayDiv);
+        }
+
+        const event = events.find(e => e.date === dateStr);
+        if (event) {
+            const eventDiv = document.createElement("div");
+            eventDiv.classList.add("event");
+            eventDiv.innerText = event.title;
+            div.appendChild(eventDiv);
+        }
+
+        div.addEventListener("click", () => {
+            clicked = dateStr;
+            showModal();
+        });
+
+        days.appendChild(div);
+    }
+
+    displaySelected();
+}
+
 function displaySelected() {
     const dayElements = document.querySelectorAll(".days div");
-    dayElements.forEach((day) => {
-        day.addEventListener("click", (e) => {
-            const selectedDate = e.target.dataset.date;
-            console.log(`Selected Date: ${selectedDate}`);
-            selected.innerHTML = `Selected Date: ${selectedDate}`;
+    dayElements.forEach(day => {
+        day.addEventListener("click", e => {
+            selected.innerHTML = `Selected Date: ${e.target.dataset.date}`;
         });
     });
 }
 
-
 previous.addEventListener("click", () => {
-    days.innerHTML = "";
-    selected.innerHTML = "";
-    if (month < 0) {  // de la Jan(0) la Dec(11)
-        month = 11;
-        year = year - 1;
-    }
-    month = month - 1;
-    console.log(month);
+    month = month === 0 ? 11 : month - 1;
+    if (month === 11) year -= 1;
     dateToday.setMonth(month);
     displayCalendar();
     displaySelected();
 });
 
 next.addEventListener("click", () => {
-    days.innerHTML = "";
-    selected.innerHTML = "";
-    if (month > 11) {
-        month = 0;
-        year = year + 1;
-    }
-    month = month + 1;
+    month = month === 11 ? 0 : month + 1;
+    if (month === 0) year += 1;
     dateToday.setMonth(month);
     displayCalendar();
     displaySelected();
 });
+
+function showModal() {
+    const event = events.find(e => e.date === clicked);
+    if (event) {
+        document.querySelector("#eventText").innerText = `${event.title}\n${event.time}\n${event.notes}`;
+        viewEventForm.style.display = "block";
+    } else {
+        addEventForm.style.display = "block";
+    }
+    modal.style.display = "block";
+}
+
+function closeModal() {
+    viewEventForm.style.display = "none";
+    addEventForm.style.display = "none";
+    modal.style.display = "none";
+    clicked = null;
+    displayCalendar();
+}
+
+btnSave.addEventListener("click", () => {
+    const title = eventTitleInput.value.trim();
+    const time = eventTimeInput.value.trim();
+    const notes = eventNotesInput.value.trim();
+
+    if (title && time) {
+        const event = { title, time, notes };
+
+        if (!events[clicked]) {
+            events[clicked] = []; 
+        }
+
+        events[clicked].push(event);
+        localStorage.setItem("events", JSON.stringify(events));
+        closeModal();
+    }
+});
+
+btnDelete.addEventListener("click", () => {
+    events = events.filter(e => e.date !== clicked);
+    localStorage.setItem("events", JSON.stringify(events));
+    closeModal();
+});
+
+btnClose.forEach(btn => btn.addEventListener("click", closeModal));
+
+function initializeFormInputs() {
+    eventTitleInput.value = "";
+    eventTimeInput.value = "";
+    eventNotesInput.value = "";
+}
+initializeFormInputs();
