@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="style\style.css">
     <link rel="stylesheet" href="style\currency_style.css">
     <link rel="stylesheet" href="style/calendar_style.css">
+    <link rel="stylesheet" href="style/weather.css">
     
 </head>
 
@@ -17,8 +18,32 @@
     <main>
         <section id="weather">
             <h2>Weather</h2>
-            <!-- TO DO -->
 
+            <div id="weather-container">
+                <div id="city-input-container">
+                    <label for="city-input">Enter City:</label>
+                    <input type="text" id="city-input" placeholder="e.g., London" title="Alphabetic characters only!">
+                    <button id="get-weather">Get Weather</button>
+                </div>
+
+                <div id="current-weather">
+                    <h3>Today's Weather</h3>
+                    <p id="temperature">Temperature: -- °C</p>
+                    <p id="description">Description: --</p>
+                    <p id="humidity">Humidity: --%</p>
+                    <p id="wind-speed">Wind Speed: -- m/s</p>
+                    <p id="pressure">Pressure: -- hPa</p>
+                </div>
+            </div>
+
+            <div id="error-message" style="color: red; display: none;"></div>
+
+            <div id="forecast">
+                <h3>Upcoming Forecast</h3>
+                <div id="forecast-days">
+                    <!-- to be completed -->
+                </div>
+            </div>
         </section>
 
         <section id="currency">
@@ -102,6 +127,7 @@
     </main>
 
     <script src="js\currency_script.js"></script>
+    <script src="js/weather.js"></script>
     <!-- <script src="js\exchange_rates.js"></script> -->
 </body>
 
