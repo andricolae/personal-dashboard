@@ -13,8 +13,6 @@ const btnSave = document.querySelector("#btnSave");
 const btnDelete = document.querySelector("#btnDelete");
 const btnClose = document.querySelectorAll(".btnClose");
 
-const weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-let navigation = 0;
 let clicked = null;
 let events = JSON.parse(localStorage.getItem("events")) || [];
 let holidays = [];
@@ -30,7 +28,7 @@ async function fetchHolidays() {
             holiday: item.localName.split('/')[0]
         }));
 
-        console.log("Holidays:", holidays);
+       // console.log("Holidays:", holidays);
     } catch (error) {
         console.error("Failed to fetch holidays:", error);
     }
@@ -109,7 +107,8 @@ function displaySelected() {
 
 previous.addEventListener("click", () => {
     month = month === 0 ? 11 : month - 1;
-    if (month === 11) year -= 1;
+    if (month == 11) year -= 1;
+    dateToday.setFullYear(year);
     dateToday.setMonth(month);
     displayCalendar();
     displaySelected();
@@ -117,8 +116,9 @@ previous.addEventListener("click", () => {
 
 next.addEventListener("click", () => {
     month = month === 11 ? 0 : month + 1;
-    if (month === 0) year += 1;
+    if (month == 0) year += 1;
     dateToday.setMonth(month);
+    dateToday.setFullYear(year);
     displayCalendar();
     displaySelected();
 });
@@ -129,6 +129,7 @@ function showModal() {
         document.querySelector("#eventText").innerText = `${event.title}\n${event.time}\n${event.notes}`;
         viewEventForm.style.display = "block";
     } else {
+        initializeFormInputs();
         addEventForm.style.display = "block";
     }
     modal.style.display = "block";
