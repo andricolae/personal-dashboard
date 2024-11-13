@@ -13,8 +13,6 @@ const btnSave = document.querySelector("#btnSave");
 const btnDelete = document.querySelector("#btnDelete");
 const btnClose = document.querySelectorAll(".btnClose");
 
-const weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-let navigation = 0;
 let clicked = null;
 let events = JSON.parse(localStorage.getItem("events")) || [];
 let holidays = [];
@@ -30,7 +28,7 @@ async function fetchHolidays() {
             holiday: item.localName.split('/')[0]
         }));
 
-        console.log("Holidays:", holidays);
+        // console.log("Holidays:", holidays);
     } catch (error) {
         console.error("Failed to fetch holidays:", error);
     }
@@ -44,6 +42,7 @@ let month = dateToday.getMonth();
 
 displayCalendar();
 displaySelected();
+
 
 function displayCalendar() {
     const formattedDate = dateToday.toLocaleString("en-US", { month: "long", year: "numeric" });
@@ -79,17 +78,26 @@ function displayCalendar() {
             div.appendChild(holidayDiv);
         }
 
-        const event = events.find(e => e.date === dateStr);
-        if (event) {
-            const eventDiv = document.createElement("div");
-            eventDiv.classList.add("event");
-            eventDiv.innerText = event.title;
-            div.appendChild(eventDiv);
+        const dayEvents = events.filter(e => e.date === dateStr);
+        if (dayEvents.length > 0) {
+            if (dayEvents.length === 1) {
+                const eventDiv = document.createElement("div");
+                eventDiv.classList.add("event");
+                eventDiv.innerText = dayEvents[0].title;
+                div.appendChild(eventDiv);
+            } else {
+                const dotDiv = document.createElement("div");
+                dotDiv.classList.add("dot");
+                dotDiv.innerHTML  = "&bull;";
+                div.appendChild(dotDiv);
+            }
         }
 
         div.addEventListener("click", () => {
             clicked = dateStr;
+            initializeFormInputs();
             showModal();
+            selected.innerHTML = `Selected Date: ${dateStr}`;
         });
 
         days.appendChild(div);
@@ -109,7 +117,8 @@ function displaySelected() {
 
 previous.addEventListener("click", () => {
     month = month === 0 ? 11 : month - 1;
-    if (month === 11) year -= 1;
+    if (month == 11) year -= 1;
+    dateToday.setFullYear(year);
     dateToday.setMonth(month);
     displayCalendar();
     displaySelected();
@@ -117,28 +126,60 @@ previous.addEventListener("click", () => {
 
 next.addEventListener("click", () => {
     month = month === 11 ? 0 : month + 1;
-    if (month === 0) year += 1;
+    if (month == 0) year += 1;
     dateToday.setMonth(month);
+    dateToday.setFullYear(year);
     displayCalendar();
     displaySelected();
 });
 
+let selectedEvent = null;
 function showModal() {
-    const event = events.find(e => e.date === clicked);
-    if (event) {
-        document.querySelector("#eventText").innerText = `${event.title}\n${event.time}\n${event.notes}`;
-        viewEventForm.style.display = "block";
-    } else {
-        addEventForm.style.display = "block";
+    const dayEvents = events.filter(e => e.date === clicked);
+    const eventContainer = document.querySelector("#eventText");
+    
+    eventContainer.innerHTML = "";
+    selectedEvent = null;
+    if (dayEvents.length > 0) {
+        dayEvents.forEach(event => {
+            const eventDetails = document.createElement("div");
+            eventDetails.classList.add("modal-event");
+            eventDetails.innerHTML = `<strong>${event.title}</strong><br>${event.time}<br>${event.notes}`;
+            
+            eventDetails.addEventListener("click", () => {
+                eventContainer.querySelectorAll(".modal-event").forEach(el => {
+                    el.classList.remove("selected-event");
+                });
+                eventDetails.classList.add("selected-event");
+                selectedEvent = event; 
+                // console.log("selected event: " + selectedEvent.title);
+            
+            });
+            eventContainer.appendChild(eventDetails);
+        });
+
+    } 
+    else{
+        const eventDetails = document.createElement("div");
+        eventDetails.classList.add("modal-event");
+        eventDetails.innerHTML = `Nothing planned for today!`;
+        eventContainer.appendChild(eventDetails);
+        btnDelete.style.display = "none";
     }
-    modal.style.display = "block";
+    initializeFormInputs();
+    viewEventForm.style.display = "block";
+    addEventForm.style.display = "block";
+    modal.style.display = "flex";
 }
+
 
 function closeModal() {
     viewEventForm.style.display = "none";
     addEventForm.style.display = "none";
     modal.style.display = "none";
+    btnDelete.style.display = "inline";
     clicked = null;
+    selectedEvent = null;
     displayCalendar();
 }
 
@@ -146,6 +187,16 @@ btnSave.addEventListener("click", () => {
     const title = eventTitleInput.value.trim();
     const time = eventTimeInput.value.trim();
     const notes = eventNotesInput.value.trim();
+
+    clearWarning();
+
+    if (!validateTime(time)) {
+        return;
+    }
+
+    if(!title){
+        showWarning("Title must be added!");
+    }
 
     if (title && time) {
         events.push({ date: clicked, title, time, notes });
@@ -155,9 +206,14 @@ btnSave.addEventListener("click", () => {
 });
 
 btnDelete.addEventListener("click", () => {
-    events = events.filter(e => e.date !== clicked);
-    localStorage.setItem("events", JSON.stringify(events));
-    closeModal();
+    if (selectedEvent) {
+        events = events.filter(event => event !== selectedEvent);
+        localStorage.setItem("events", JSON.stringify(events));
+        closeModal();
+        displayCalendar(); 
+    } else {
+        showWarning("Please select an event to delete.");
+    }
 });
 
 btnClose.forEach(btn => btn.addEventListener("click", closeModal));
@@ -167,4 +223,36 @@ function initializeFormInputs() {
     eventTimeInput.value = "";
     eventNotesInput.value = "";
 }
-initializeFormInputs();
+
+function validateTime(time){
+    const timeRegex = /^\d{2}:\d{2}\s*-\s*\d{2}:\d{2}$/;
+    const [startTime, endTime] = time.split(' - ');
+    const [hours1, minutes1] = startTime.split(':').map(Number);
+    const [hours2, minutes2] = endTime.split(':').map(Number);
+
+    if (isNaN(hours1) || isNaN(hours2) || isNaN(minutes1) || isNaN(minutes2) || 
+    hours1 < 0 || hours1 > 23 || hours2 > 23 || hours2 < 0 || 
+    minutes1 < 0 || minutes1 > 59 || minutes2 < 0 || minutes2 > 59 || hours1 > hours2) {
+        showWarning("Invalid time interval.");
+        return false; 
+    }
+
+    if(!timeRegex.test(time)){
+        showWarning("Please enter time in HH:MM - HH:MM format.");
+        return false;
+    }
+
+    return true;
+}
+
+function showWarning(message) {
+    const warningDiv = document.querySelector("#warning"); 
+    warningDiv.innerText = message;
+    warningDiv.style.display = "block";
+}
+
+function clearWarning() {
+    const warningDiv = document.querySelector("#warning");
+    warningDiv.innerText = "";
+    warningDiv.style.display = "none";
+}
