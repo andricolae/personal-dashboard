@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="style/calendar_style.css">
     <link rel="stylesheet" href="style/weather.css">
     <link rel="stylesheet" href="style/news-style.css">
-    
+
 </head>
 
 <body>
@@ -100,15 +100,15 @@
             <script type="module" src="js/calendar_script.js"></script>
 
             <div id="modal" class="modal">
+                <div class="modal-header">
+                    <span class="btnClose"> &times; </span>
+                </div>
                 <div id="viewEvent" class="modal-content">
-                    <span class="btnClose">&times;</span>
-                    <h3>Event Details</h3>
+                    <h3>Today's Events</h3>
                     <p id="eventText"></p>
                     <button id="btnDelete">Delete Event</button>
                 </div>
-
                 <div id="addEvent" class="modal-content">
-                    <span class="btnClose">&times;</span>
                     <h3>Add Event</h3>
                     <input type="text" id="txtTitle" placeholder="Event Title">
                     <input type="text" id="event-time" placeholder="e.g., 10:00 - 11:00">
@@ -117,7 +117,6 @@
                     <button id="btnSave">Save Event</button>
                 </div>
             </div>
-
         </section>
 
         <section id="news">

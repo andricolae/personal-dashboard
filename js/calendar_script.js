@@ -28,7 +28,7 @@ async function fetchHolidays() {
             holiday: item.localName.split('/')[0]
         }));
 
-       // console.log("Holidays:", holidays);
+        // console.log("Holidays:", holidays);
     } catch (error) {
         console.error("Failed to fetch holidays:", error);
     }
@@ -42,6 +42,7 @@ let month = dateToday.getMonth();
 
 displayCalendar();
 displaySelected();
+
 
 function displayCalendar() {
     const formattedDate = dateToday.toLocaleString("en-US", { month: "long", year: "numeric" });
@@ -77,17 +78,26 @@ function displayCalendar() {
             div.appendChild(holidayDiv);
         }
 
-        const event = events.find(e => e.date === dateStr);
-        if (event) {
-            const eventDiv = document.createElement("div");
-            eventDiv.classList.add("event");
-            eventDiv.innerText = event.title;
-            div.appendChild(eventDiv);
+        const dayEvents = events.filter(e => e.date === dateStr);
+        if (dayEvents.length > 0) {
+            if (dayEvents.length === 1) {
+                const eventDiv = document.createElement("div");
+                eventDiv.classList.add("event");
+                eventDiv.innerText = dayEvents[0].title;
+                div.appendChild(eventDiv);
+            } else {
+                const dotDiv = document.createElement("div");
+                dotDiv.classList.add("dot");
+                dotDiv.innerHTML  = "&bull;";
+                div.appendChild(dotDiv);
+            }
         }
 
         div.addEventListener("click", () => {
             clicked = dateStr;
+            initializeFormInputs();
             showModal();
+            selected.innerHTML = `Selected Date: ${dateStr}`;
         });
 
         days.appendChild(div);
@@ -123,23 +133,53 @@ next.addEventListener("click", () => {
     displaySelected();
 });
 
+let selectedEvent = null;
 function showModal() {
-    const event = events.find(e => e.date === clicked);
-    if (event) {
-        document.querySelector("#eventText").innerText = `${event.title}\n${event.time}\n${event.notes}`;
-        viewEventForm.style.display = "block";
-    } else {
-        initializeFormInputs();
-        addEventForm.style.display = "block";
+    const dayEvents = events.filter(e => e.date === clicked);
+    const eventContainer = document.querySelector("#eventText");
+    
+    eventContainer.innerHTML = "";
+    selectedEvent = null;
+    if (dayEvents.length > 0) {
+        dayEvents.forEach(event => {
+            const eventDetails = document.createElement("div");
+            eventDetails.classList.add("modal-event");
+            eventDetails.innerHTML = `<strong>${event.title}</strong><br>${event.time}<br>${event.notes}`;
+            
+            eventDetails.addEventListener("click", () => {
+                eventContainer.querySelectorAll(".modal-event").forEach(el => {
+                    el.classList.remove("selected-event");
+                });
+                eventDetails.classList.add("selected-event");
+                selectedEvent = event; 
+                // console.log("selected event: " + selectedEvent.title);
+            
+            });
+            eventContainer.appendChild(eventDetails);
+        });
+
+    } 
+    else{
+        const eventDetails = document.createElement("div");
+        eventDetails.classList.add("modal-event");
+        eventDetails.innerHTML = `Nothing planned for today!`;
+        eventContainer.appendChild(eventDetails);
+        btnDelete.style.display = "none";
     }
-    modal.style.display = "block";
+    initializeFormInputs();
+    viewEventForm.style.display = "block";
+    addEventForm.style.display = "block";
+    modal.style.display = "flex";
 }
+
 
 function closeModal() {
     viewEventForm.style.display = "none";
     addEventForm.style.display = "none";
     modal.style.display = "none";
+    btnDelete.style.display = "inline";
     clicked = null;
+    selectedEvent = null;
     displayCalendar();
 }
 
@@ -156,9 +196,14 @@ btnSave.addEventListener("click", () => {
 });
 
 btnDelete.addEventListener("click", () => {
-    events = events.filter(e => e.date !== clicked);
-    localStorage.setItem("events", JSON.stringify(events));
-    closeModal();
+        if (selectedEvent) {
+        events = events.filter(event => event !== selectedEvent);
+        localStorage.setItem("events", JSON.stringify(events));
+        closeModal();
+        displayCalendar(); 
+    } else {
+        alert("Please select an event to delete.");
+    }
 });
 
 btnClose.forEach(btn => btn.addEventListener("click", closeModal));
@@ -168,4 +213,3 @@ function initializeFormInputs() {
     eventTimeInput.value = "";
     eventNotesInput.value = "";
 }
-initializeFormInputs();
