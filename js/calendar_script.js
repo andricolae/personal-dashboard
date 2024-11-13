@@ -188,6 +188,16 @@ btnSave.addEventListener("click", () => {
     const time = eventTimeInput.value.trim();
     const notes = eventNotesInput.value.trim();
 
+    clearWarning();
+
+    if (!validateTime(time)) {
+        return;
+    }
+
+    if(!title){
+        showWarning("Title must be added!");
+    }
+
     if (title && time) {
         events.push({ date: clicked, title, time, notes });
         localStorage.setItem("events", JSON.stringify(events));
@@ -196,13 +206,13 @@ btnSave.addEventListener("click", () => {
 });
 
 btnDelete.addEventListener("click", () => {
-        if (selectedEvent) {
+    if (selectedEvent) {
         events = events.filter(event => event !== selectedEvent);
         localStorage.setItem("events", JSON.stringify(events));
         closeModal();
         displayCalendar(); 
     } else {
-        alert("Please select an event to delete.");
+        showWarning("Please select an event to delete.");
     }
 });
 
@@ -212,4 +222,37 @@ function initializeFormInputs() {
     eventTitleInput.value = "";
     eventTimeInput.value = "";
     eventNotesInput.value = "";
+}
+
+function validateTime(time){
+    const timeRegex = /^\d{2}:\d{2}\s*-\s*\d{2}:\d{2}$/;
+    const [startTime, endTime] = time.split(' - ');
+    const [hours1, minutes1] = startTime.split(':').map(Number);
+    const [hours2, minutes2] = endTime.split(':').map(Number);
+
+    if (isNaN(hours1) || isNaN(hours2) || isNaN(minutes1) || isNaN(minutes2) || 
+    hours1 < 0 || hours1 > 23 || hours2 > 23 || hours2 < 0 || 
+    minutes1 < 0 || minutes1 > 59 || minutes2 < 0 || minutes2 > 59 || hours1 > hours2) {
+        showWarning("Invalid time interval.");
+        return false; 
+    }
+
+    if(!timeRegex.test(time)){
+        showWarning("Please enter time in HH:MM - HH:MM format.");
+        return false;
+    }
+
+    return true;
+}
+
+function showWarning(message) {
+    const warningDiv = document.querySelector("#warning"); 
+    warningDiv.innerText = message;
+    warningDiv.style.display = "block";
+}
+
+function clearWarning() {
+    const warningDiv = document.querySelector("#warning");
+    warningDiv.innerText = "";
+    warningDiv.style.display = "none";
 }
